@@ -2,40 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
 use App\Models\LevelModel;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class LevelController extends Controller
 {
-    public function index()
-    {
-        // DB::insert('insert into m_level(level_kode, level_nama, created_at) values (?, ?, ?)', ['CUS', 'Pelanggan', now()]);
-        // return 'Insert data baru berhasil';
+    public function index(){
+        $breadcrumb = (object)[
+            'title' => 'Daftar Level',
+            'list' => ['Home', 'Level']
+        ];
 
-        // $row = DB::update("update m_level set level_nama = ? where level_kode = ?", ['Customer', 'CUS']);
-        // return "Update data berhasil. Jumlah data yang diupdate: " . $row . " baris";
+        $page = (object)[
+            'title' => 'Daftar level yang terdaftar dalam sistem'
+        ];
 
-        // $row = DB::delete("delete from m_level where level_kode = ?", ['CUS']);
-        // return "Delete data berhasil. Jumlah data yang dihapus: " . $row . " baris";
+        $activeMenu = 'level'; //set menu yang sedang aktif
 
-        //menampilkan data
-        // $data = DB::select('select * from m_level');
-        // return view('level', ['data' => $data]);
-
-            $breadcrumb = (object)[
-                'title' => 'Daftar Level',
-                'list' => ['Home', 'Level']
-            ];
-    
-            $page = (object)[
-                'title' => 'Daftar level yang terdaftar dalam sistem'
-            ];
-    
-            $activeMenu = 'level'; //set menu yang sedang aktif
-    
-            return view('level', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+        return view('level.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
     }
 
     public function list(Request $request)
@@ -54,5 +40,94 @@ class LevelController extends Controller
             })
             ->rawColumns(['aksi']) // memberitahu bahwa kolom aksi adalah html
             ->make(true);
+    }
+
+    public function create()
+    {
+        $breadcrumb = (object)[
+            'title' => 'Tambah Level',
+            'list' => ['Home', 'Level', 'Tambah']
+        ];
+
+        $page = (object)[
+            'title' => 'Tambah Level'
+        ];
+
+        $activeMenu = 'level'; //set menu yang sedang aktif
+
+        return view('level.create', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'level_kode' => 'required',
+            'level_nama' => 'required'
+        ]);
+
+        LevelModel::create([
+            'level_kode' => $request->level_kode,
+            'level_nama' => $request->level_nama
+        ]);
+
+        return redirect('/level')->with('status', 'Data level berhasil ditambahkan!');
+    }
+
+    public function show($id)
+    {
+        $breadcrumb = (object)[
+            'title' => 'Detail Level',
+            'list' => ['Home', 'Level', 'Detail']
+        ];
+
+        $page = (object)[
+            'title' => 'Detail Level'
+        ];
+
+        $activeMenu = 'level'; //set menu yang sedang aktif
+
+        $level = LevelModel::find($id);
+
+        return view('level.show', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu, 'level' => $level]);
+    }
+
+    public function edit($id)
+    {
+        $breadcrumb = (object)[
+            'title' => 'Edit Level',
+            'list' => ['Home', 'Level', 'Edit']
+        ];
+
+        $page = (object)[
+            'title' => 'Edit Level'
+        ];
+
+        $activeMenu = 'level'; //set menu yang sedang aktif
+
+        $level = LevelModel::find($id);
+
+        return view('level.edit', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu, 'level' => $level]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'level_kode' => 'required',
+            'level_nama' => 'required'
+        ]);
+
+        LevelModel::where('level_id', $id)->update([
+            'level_kode' => $request->level_kode,
+            'level_nama' => $request->level_nama
+        ]);
+
+        return redirect('/level')->with('status', 'Data level berhasil diubah!');
+    }
+
+    public function destroy($id)
+    {
+        LevelModel::destroy($id);
+
+        return redirect('/level')->with('status', 'Data level berhasil dihapus!');
     }
 }
