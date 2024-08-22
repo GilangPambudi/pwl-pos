@@ -45,8 +45,7 @@
             </table>
         </div>
     </div>
-    <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" databackdrop="static"
-        data-keyboard="false" data-width="75%" aria-hidden="true"></div>
+    <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" data-width="75%" aria-hidden="true"></div>
 @endsection
 
 @push('css')
@@ -70,7 +69,6 @@
                     "data": function(d) {
                         d.level_id = $('#level_id').val();
                     }
-
                 },
                 columns: [{
                         data: "DT_RowIndex",

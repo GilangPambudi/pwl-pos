@@ -20,11 +20,11 @@
             </div>
             <div class="form-group">
                 <label for="harga_beli">Harga Beli</label>
-                <input type="text" class="form-control" id="harga_beli" name="harga_beli" value="Rp{{ $barang->harga_beli }}" readonly>
+                <input type="text" class="form-control" id="harga_beli" name="harga_beli" value="Rp{{ number_format($barang->harga_beli, 0, ',', '.') }}" readonly>
             </div>
             <div class="form-group">
                 <label for="harga_jual">Harga Jual</label>
-                <input type="text" class="form-control" id="harga_jual" name="harga_jual" value="Rp{{ $barang->harga_jual }}" readonly>
+                <input type="text" class="form-control" id="harga_jual" name="harga_jual" value="Rp{{ number_format($barang->harga_jual, 0, ',', '.') }}" readonly>
             </div>
         </div>
         <div class="card-footer">

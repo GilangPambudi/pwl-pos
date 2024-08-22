@@ -58,20 +58,15 @@ class UserController extends Controller
     public function list(Request $request)
     {
         $user = UserModel::select('user_id', 'username', 'nama', 'level_id')->with('level');
-        $level_id = $request->input('filter_level');
+        
+        $level_id = $request->input('level_id');
         if (!empty($level_id)) {
             $user->where('level_id', $level_id);
         }
+
         return DataTables::of($user)
             ->addIndexColumn()
             ->addColumn('aksi', function ($user) { // menambahkan kolom aksi
-                /*$btn = '<a href="'.url('/user/' . $user->user_id).'" class="btn btn-info btnsm">Detail</a> ';
-$btn .= '<a href="'.url('/user/' . $user->user_id . '/edit').'"class="btn btnwarning btn-sm">Edit</a> ';
-$btn .= '<form class="d-inline-block" method="POST" action="'.
-url('/user/'.$user->user_id).'">'
-. csrf_field() . method_field('DELETE') .
-'<button type="submit" class="btn btn-danger btn-sm" onclick="return
-confirm(\'Apakah Anda yakit menghapus data ini?\');">Hapus</button></form>'; */
                 $btn = '<button onclick="modalAction(\'' . url('/user/' . $user->user_id .
                     '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/user/' . $user->user_id .
@@ -128,7 +123,14 @@ confirm(\'Apakah Anda yakit menghapus data ini?\');">Hapus</button></form>'; */
                     'msgField' => $validator->errors() // menunjukkan field mana yang error
                 ]);
             }
-            UserModel::create($request->all());
+            UserModel::create(
+                [
+                    'level_id' => $request->level_id,
+                    'username' => $request->username,
+                    'nama' => $request->nama,
+                    'password' => bcrypt($request->password)
+                ]
+            );
             return response()->json([
                 'status' => true,
                 'message' => 'Data berhasil disimpan'
